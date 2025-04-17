@@ -19,7 +19,7 @@ import { Select as ReactSelect } from "chakra-react-select";
 import useTranslation from "next-translate/useTranslation";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { IoArrowDown, IoCallSharp } from "react-icons/io5";
+import { MdEmail } from "react-icons/md";
 
 type selectInput = {
   value: any;
@@ -30,7 +30,7 @@ export type InviteInput = {
   code: string;
   firstName: string;
   lastName: string;
-  phoneNumber: string;
+  email: string;
   role?: UserRole;
 };
 
@@ -49,14 +49,14 @@ export const AuthFormAdminInvite = ({
     code: "",
     firstName: "",
     lastName: "",
-    phoneNumber: "",
-    role: role || UserRole.LOCAL_DOCTOR,
+    email: "",
+    role: role || UserRole.DRIVER,
   };
   if (process.env.NODE_ENV !== "production") {
     defaultValues.code = faker.word.noun(8);
     defaultValues.firstName = faker.name.firstName();
     defaultValues.lastName = faker.name.lastName();
-    defaultValues.phoneNumber = faker.phone.phoneNumber("00000000");
+    defaultValues.email = faker.internet.email();
   }
 
   const {
@@ -129,8 +129,8 @@ export const AuthFormAdminInvite = ({
             {errors.firstName && errors.firstName.message}
           </FormErrorMessage>
         </FormControl>
-        <FormControl id="phoneNumber" isInvalid={!!errors.phoneNumber}>
-          <FormLabel>Утасны дугаар</FormLabel>
+        <FormControl id="email" isInvalid={!!errors.email}>
+          <FormLabel>Email Address</FormLabel>
           <HStack
             position={"relative"}
             border={"1px"}
@@ -140,34 +140,30 @@ export const AuthFormAdminInvite = ({
             h={10}
           >
             <Box ml={2}>
-              <IoCallSharp />
+              <MdEmail />
             </Box>
             <Input
               fontSize={12}
               border={"none"}
               variant={"unstyled"}
-              autoComplete="off"
-              {...register("phoneNumber", {
-                required: "Phone number is required",
-                maxLength: {
-                  value: 13,
-                  message: "Phone number must be less than 13 digit",
-                },
-                minLength: {
-                  value: 8,
-                  message: "Phone number must be at least 8 digit",
+              autoComplete="email"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "Invalid email address",
                 },
               })}
-              placeholder={"✹✹✹✹✹✹✹✹"}
+              placeholder={"example@email.com"}
             />
           </HStack>
           <FormErrorMessage>
-            {errors.phoneNumber && errors.phoneNumber.message}
+            {errors.email && errors.email.message}
           </FormErrorMessage>
         </FormControl>
         <Box w="full">
           <Button type="submit" size="md" variant="add">
-            Хадгалах
+            Save
           </Button>
         </Box>
       </VStack>

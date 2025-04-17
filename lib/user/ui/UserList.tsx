@@ -11,16 +11,16 @@ import { UsersTableActions } from "./UserTableActions";
 
 export const columns = [
   {
-    Header: "Бүртгэл",
+    Header: "Load ID",
     Cell: (data: any) => <UserDescription userId={data.id} {...data} />,
   },
   {
-    Header: "Эрх",
+    Header: "Car Name",
     Cell: (data: any) => <Badge fontSize="11px">{data.role}</Badge>,
   },
 
   {
-    Header: "Хариуцсан эмч",
+    Header: "Dispatcher",
     Cell: (data: any) => (
       <>
         {/* <Box fontSize="xs" mt={1}>

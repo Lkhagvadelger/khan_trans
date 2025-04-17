@@ -44,7 +44,7 @@ export const UserListSelect = forwardRef(
         <UsersTableActions
           params={params}
           setParam={setParam}
-          roles={[UserRole.ADMIN, UserRole.LOCAL_DOCTOR, UserRole.PATIENT]}
+          roles={[UserRole.ADMIN, UserRole.DISPATCHER, UserRole.DRIVER]}
         />
 
         <SelectionTable

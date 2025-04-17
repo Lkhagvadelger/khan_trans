@@ -24,7 +24,7 @@ import { usePhoneConfirmation, usePhoneVerification } from "../data/authHooks";
 import { CardCaption } from "./components";
 
 type AdminLoginInput = {
-  phoneNumber: string;
+  email: string;
   pin: string;
   showPin: boolean;
   code: string;
@@ -60,21 +60,21 @@ export const LoginPage = () => {
   watch("showPin");
   const doLogin = () => {
     const body = {
-      username: getValues("phoneNumber").toLowerCase(),
-      method: "phone",
+      username: getValues("email").toLowerCase(),
+      method: "email",
       code: getValues("code"),
     };
 
     if (getValues("showPin") !== true) {
       requestCodeMutation.mutate(body, {
         onError: (error: any) => {
-          setError("phoneNumber", { message: error.translationKey });
+          setError("email", { message: error.translationKey });
         },
         onSuccess: (data: any) => {
           if (data.success == true) {
             setValue("showPin", true);
             toaster.success(
-              "Таны утсанд очсон баталгаажуулах кодыг оруулна уу"
+              "Please enter the verification code sent to your phone"
             );
           }
         },
@@ -84,18 +84,18 @@ export const LoginPage = () => {
 
     if (!getValues("pin") || getValues("pin").length != 6)
       return setError("pin", {
-        message: "Зөв код оруулна уу",
+        message: "Please enter a valid code",
       });
 
     mutation.mutate(
       { ...body, pin: getValues("pin") },
       {
         onError: (error: any) => {
-          toaster.success("Баталгаажуулах код буруу байна.");
+          toaster.success("The verification code is incorrect.");
           setError("pin", { message: error.translationKey });
         },
         onSuccess: (data: any) => {
-          toaster.success("Баталгаажуулалт амжилттай боллоо.");
+          toaster.success("Verification successful.");
           if (data.role == UserRole.ADMIN)
             router.push({
               pathname: `/admin`,
@@ -106,11 +106,11 @@ export const LoginPage = () => {
     );
   };
   return (
-    <AuthLayout title={"Нэвтрэх"} caption={""} contentWidth="480px">
+    <AuthLayout title={"Login"} caption={""} contentWidth="480px">
       <chakra.form onSubmit={action}>
         <Flex flex="1" gap="3" flexDir="column" borderLeftRadius={"10px"}>
-          <FormControl id="email" isInvalid={!!errors.phoneNumber}>
-            <CardCaption text={"Утасны дугаар"} />
+          <FormControl id="email" isInvalid={!!errors.email}>
+            <CardCaption text={"Phone Number"} />
             <InputGroup>
               <Input
                 w="full"
@@ -126,16 +126,18 @@ export const LoginPage = () => {
                 }}
                 disabled={getValues("showPin") === true}
                 type="text"
-                placeholder={""}
-                {...register("phoneNumber", {
-                  required: "Утасны дугаар оруулна уу",
+                placeholder={"Enter your phone number"}
+                {...register("email", {
+                  required: "Please enter your phone number",
                 })}
               />
             </InputGroup>
           </FormControl>
           {getValues("showPin") && (
             <FormControl id="pin" pt={4} isInvalid={!!errors.pin}>
-              <CardCaption text={`Таны утсанд ирсэн пин кодыг оруулна уу`} />
+              <CardCaption
+                text={`Please enter the pin code sent to your phone`}
+              />
               <HStack justify="space-between">
                 <PinInput
                   size={"md"}
@@ -163,7 +165,7 @@ export const LoginPage = () => {
                   color="gray.600"
                   fontSize={"14px"}
                 >
-                  Өөр утасны дугаараар нэвтрэх
+                  Log in with a different email
                 </Text>
               </Box>
             </FormControl>
@@ -174,7 +176,7 @@ export const LoginPage = () => {
             isLoading={requestCodeMutation.isLoading || mutation.isLoading}
             onClick={doLogin}
           >
-            Үргэлжлүүлэх
+            Continue
           </Button>
         </Flex>
       </chakra.form>

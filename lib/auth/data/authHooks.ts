@@ -2,6 +2,8 @@ import { User } from "@prisma/client";
 import { AppError } from "@util/errors";
 import { API, Method } from "@util/query";
 import { useMutation, useQuery } from "react-query";
+import { useRouter } from "next/navigation";
+import { useToast } from "@chakra-ui/react";
 
 export type AuthUser = Pick<User, "id" | "email" | "phoneNumber" | "role"> & {
   profile: any;
@@ -43,5 +45,28 @@ export const usePhoneVerification = () =>
 export const usePhoneConfirmation = () =>
   useMutation(API._mutate(Method.POST, `auth/login`));
 
-export const useLogout = () =>
-  useMutation(API._mutate(Method.DELETE, `auth/logout`));
+export const useLogout = () => {
+  const router = useRouter();
+  const toast = useToast();
+
+  return useMutation(
+    async () => {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      return response.json();
+    },
+    {
+      onSuccess: () => {
+        toast({ status: "success", description: "Successfully logged out" });
+        router.push("/login");
+      },
+      onError: () => {
+        toast({ status: "error", description: "Failed to logout" });
+      },
+    }
+  );
+};

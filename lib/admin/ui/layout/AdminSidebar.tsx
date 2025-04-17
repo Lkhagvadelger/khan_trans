@@ -30,12 +30,12 @@ const menuItems: (MenuItemType & { items?: MenuItemType[] })[] = [
     label: "Users",
     items: [
       {
-        label: "Бүх өвчтөн",
+        label: "All Loads",
         icon: <MdSupervisedUserCircle />,
-        href: "/admin/users?role=PATIENT",
+        href: "/admin/loads",
       },
       {
-        label: "Мессеж",
+        label: "Messege",
         icon: <MdMessage />,
         href: "/admin/message",
       },

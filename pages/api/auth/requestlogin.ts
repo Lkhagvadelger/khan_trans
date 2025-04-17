@@ -12,7 +12,7 @@ handler.post(async (req, res) => {
       return res.sendError(
         400,
         ERROR_MESSAGES.BAD_REQUEST,
-        "Энэ дугаар бүртгэгдээгүй байна"
+        "Invalid email address"
       );
   }
   return res.sendError(400, ERROR_MESSAGES.BAD_REQUEST, "failed-to-get-pin");

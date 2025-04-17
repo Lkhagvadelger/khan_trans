@@ -4,7 +4,7 @@ services:
     container_name: boilerplate_dev_postgres_container
     image: postgres:latest
     ports:
-      - 5666:5432
+      - 5666:5433
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password

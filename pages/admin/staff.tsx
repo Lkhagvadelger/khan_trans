@@ -10,7 +10,7 @@ const AdminStaff = () => {
     <NotFoundPage />
   ) : (
     <AdminLayout>
-      <UserList />
+      <></>
     </AdminLayout>
   );
 };

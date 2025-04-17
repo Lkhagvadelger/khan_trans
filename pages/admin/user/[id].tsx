@@ -12,6 +12,7 @@ const AdminUserDetailPage = () => {
     <NotFoundPage />
   ) : (
     <AdminLayout>
+      <></>
     </AdminLayout>
   );
 };

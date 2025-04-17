@@ -55,14 +55,14 @@ export const UsersTableActions = ({
       >
         <FormControl w="64">
           <InputGroup size="sm">
-            <FormLabel srOnly>Код, утсаар хайх</FormLabel>
+            <FormLabel srOnly>Load хайх</FormLabel>
             <InputLeftElement pointerEvents="none" color="gray.400" pl={1}>
               <BsSearch />
             </InputLeftElement>
             <Input
               rounded="base"
               type="search"
-              placeholder="Код, утсаар хайх..."
+              placeholder="Load хайх..."
               pl="8"
               pr="2"
               value={params.text}
@@ -83,14 +83,14 @@ export const UsersTableActions = ({
         ))}
       </Select> */}
         <Button variant={"add"} onClick={() => onOpen()}>
-          <Icon as={MdAdd} mr={2} /> Өвчтөн нэмэх
+          <Icon as={MdAdd} mr={2} /> Load нэмэх
         </Button>
       </Stack>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent maxW={700} bg="white">
           <ModalHeader color={"main.700"} fontWeight={700}>
-            Өвчтөн нэмэх
+            Load нэмэх
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>

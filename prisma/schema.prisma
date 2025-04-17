@@ -15,7 +15,7 @@ model User {
   passwordDigest      String?
   phoneNumber         String    @unique
   phoneNumberVerified DateTime?
-  role                UserRole  @default(PATIENT)
+  role                UserRole  @default(ADMIN)
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
   pin                 String?
@@ -24,6 +24,9 @@ model User {
   pinVerifiedAt       DateTime?
   profile             Profile?
   tags                String[]  @default([])
+
+  // Relationship with ActivityLog
+  activityLogs        ActivityLog[]
 }
 
 model Profile {
@@ -48,6 +51,115 @@ model Profile {
   patientCode        String?   @unique
   allowPatientAssign DateTime?
   user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Load {
+  id           String    @id @default(cuid())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  LoadID       String    @unique
+  PickUpDate   DateTime
+  DeliveryDate DateTime
+
+  loadAddresses LoadAddress[] 
+  vehicles      Vehicle[]    
+  notes         Note[]        
+  payments      Payment[]    
+  driver        Driver?       @relation(fields: [driverId], references: [id])
+  driverId      String?
+  broker        BrokerInfo?   @relation(fields: [brokerId], references: [id])
+  brokerId      String?
+
+  // Relationship with ActivityLog
+  activityLogs  ActivityLog[]
+}
+
+model Vehicle {
+  id               String   @id @default(cuid())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  Vehicle          String
+
+  VehicleWeight    Int?
+  VehicleType      String?
+  VehicleYear      Int?
+  VehicleMake      String?
+  VehicleModel     String?
+  VehicleColor     String?
+  VehicleLotNumber String?
+
+  // Relationships
+  loadId           String?
+  load             Load? @relation(fields: [loadId], references: [id])
+}
+
+
+model LoadAddress {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Location    String
+  Contact     String
+  ContactPhone String
+
+  // Relationships
+  loadId      String?
+  load        Load? @relation(fields: [loadId], references: [id])
+}
+
+model Note {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Note        String
+
+  // Relationships
+  loadId      String?
+  load        Load? @relation(fields: [loadId], references: [id])
+}
+
+model Payment {
+  id             String   @id @default(cuid())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  Payment        String
+  PaymentDate    DateTime
+  PaymentAmount  Int
+  PaymentMethod  String
+  PaymentStatus  String
+
+  // Relationships
+  loadId         String?
+  load           Load? @relation(fields: [loadId], references: [id])
+}
+
+model Driver {
+  id                   String   @id @default(cuid())
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  Driver               String
+  DriverPhone          String
+  DriverEmail          String @unique
+  DriverLicense        String @unique
+  DriverLicenseExpiry  DateTime
+  DriverLicenseState   String
+  DriverLicenseNumber  String @unique
+
+  // Relationships
+  loads                Load[]
+}
+
+model BrokerInfo {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  BrokerName  String
+  BrokerEmail String @unique
+  BrokerContact Int
+  MC_Number   Int @unique
+
+  // Relationships
+  loads       Load[]
 }
 
 model Session {
@@ -81,10 +193,9 @@ model FileUpload {
 }
 
 enum UserRole {
-  PATIENT
-  LOCAL_DOCTOR
+  DRIVER
+  DISPATCHER
   ADMIN
-  NURSE
 }
 
 model IP2Location {
@@ -102,4 +213,23 @@ model FirebaseToken {
   token     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum PatientRegion {
+  NORTH
+  SOUTH
+  EAST
+  WEST
+}
+
+model ActivityLog {
+  id          String   @id @default(cuid())
+  userId      String   // The user who performed the action
+  action      String   // Created, Updated, Deleted
+  timestamp   DateTime @default(now())
+  loadId      String?  // Optional, if related to a load
+  load        Load?    @relation(fields: [loadId], references: [id], onDelete: Cascade)
+  details     String?  // JSON or text field to store changes
+  ipAddress   String?  // Optionally log the IP of the user
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

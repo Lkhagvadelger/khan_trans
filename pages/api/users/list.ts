@@ -7,7 +7,7 @@ const handler = createHandler();
 
 handler.post(async (req, res) => {
   if (!req.user) throw AppError.Unauthorized();
-  if (req.user.role === UserRole.PATIENT) throw AppError.Forbidden();
+  if (req.user.role === UserRole.DISPATCHER) throw AppError.Forbidden();
   res.sendSuccess(await getUserList(req.body));
 });
 

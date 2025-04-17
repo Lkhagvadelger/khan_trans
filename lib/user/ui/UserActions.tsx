@@ -1,13 +1,20 @@
 import { useRouter } from "next/router";
-import { ButtonGroup, IconButton, toaster, Tooltip } from "@ui/index";
-import { UserRole } from "@prisma/client";
-import { FiUser } from "react-icons/fi";
 import {
-  RiDeleteBack2Line,
-  RiDeleteBin2Line,
-  RiDeleteRow,
-  RiProfileLine,
-} from "react-icons/ri";
+  ButtonGroup,
+  IconButton,
+  Tooltip,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  VStack,
+  Text,
+  Box,
+} from "@ui/index";
+import { FiUser } from "react-icons/fi";
 
 export const UserActions = ({
   rowData,
@@ -16,23 +23,48 @@ export const UserActions = ({
   rowData: any;
   refetch: () => void;
 }) => {
-  const router = useRouter();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <ButtonGroup
-      spacing="0"
-      colorScheme="green"
-      variant="ghost"
-      size="sm"
-      float="left"
-    >
-      <Tooltip label="Дэлгэрэнгүй">
-        <IconButton
-          icon={<FiUser />}
-          aria-label="Дэлгэрэнгүй"
-          onClick={() => router.push(`/admin/user/${rowData.id}`)}
-        />
-      </Tooltip>
-    </ButtonGroup>
+    <>
+      <ButtonGroup
+        spacing="0"
+        colorScheme="green"
+        variant="ghost"
+        size="sm"
+        float="left"
+      >
+        <Tooltip label="Details">
+          <IconButton icon={<FiUser />} aria-label="Details" onClick={onOpen} />
+        </Tooltip>
+      </ButtonGroup>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>User Details</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <VStack align="stretch" spacing={3}>
+              <Box>
+                <Text fontWeight="bold">Name:</Text>
+                <Text>
+                  {rowData.firstName} {rowData.lastName}
+                </Text>
+              </Box>
+              <Box>
+                <Text fontWeight="bold">Email:</Text>
+                <Text>{rowData.email}</Text>
+              </Box>
+              <Box>
+                <Text fontWeight="bold">Role:</Text>
+                <Text>{rowData.role}</Text>
+              </Box>
+              {/* Add more user details as needed */}
+            </VStack>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
